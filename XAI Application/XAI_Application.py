@@ -6,6 +6,13 @@ import sys
 
 load_dotenv()
 
+def print_animated(text):
+    for t in text:
+        sys.stdout.write(t)
+        sys.stdout.flush()
+        time.sleep(0.05)
+    print()
+
 def main():
     # Load API key from environment variable
     api_key = os.getenv("XAI_API_KEY")
@@ -18,8 +25,17 @@ def main():
 
     # Initialize client
     client = AIClient(api_key)
-    
-    chatting = True
+
+    response, citations = client.generate_text("Give me a greeting")
+
+    if response: 
+        print_animated(response)
+        print()
+        chatting = True
+    else:
+        print_animated("Something went wrong.")
+        print()
+        chatting = False
 
     while chatting:
         # Get the prompt
@@ -27,24 +43,24 @@ def main():
 
         if "bye" in prompt.lower():
             chatting = False
-            result = "Talk to you later!"
-
+            response, citations = client.generate_text("Give me a farewell sign off")
         else:
             # Make API call
-            result = client.generate_text(prompt)
+            response, citations = client.generate_text(prompt)
     
-        if result:
+        if response:
             print()
             sys.stdout.write("\rNugget: ")
             sys.stdout.flush()
 
-            for c in result:
-                sys.stdout.write(c)
-                sys.stdout.flush()
-                time.sleep(0.05)
+            print_animated(response)
 
             print()
             print()
+            if citations:
+                for c in citations:
+                    print(c)
+                print()
         else:
             print("Failed to get response")
 
