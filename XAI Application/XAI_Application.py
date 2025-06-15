@@ -35,7 +35,7 @@ def main():
     
         if result:
             print()
-            sys.stdout.write("\rGrok: ")
+            sys.stdout.write("\rNugget: ")
             sys.stdout.flush()
 
             for c in result:
