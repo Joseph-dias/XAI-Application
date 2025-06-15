@@ -19,7 +19,7 @@ def main():
     
     if not api_key:
         print("Error: XAI_API_KEY environment variable not set")
-        print("Please set it using: export XAI_API_KEY='your-api-key'")
+        print("Please set by creating a file in your project called .env and putting XAI_API_KEY='your-api-key' in it.")
         print("Get your API key from https://x.ai/api")
         return
 
