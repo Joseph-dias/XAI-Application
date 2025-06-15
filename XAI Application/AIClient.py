@@ -21,14 +21,14 @@ class AIClient:
             "Content-Type": "application/json"
         }
 
-        self.messages = [
+        self.messages = [ #We are remembering all previous messages here so that the conversation can keep going in context
             {
                 "role": "system",
                 "content": self.systemInstructions #Customizing this AI
             },
             {
                 "role": "system",
-                "content": f"Limit response to {self.max_tokens} tokens"
+                "content": f"Limit response to {self.max_tokens} tokens" #Limiting the response so that the output is cleaner
             }
         ]
 
