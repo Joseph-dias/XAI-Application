@@ -1,68 +1,65 @@
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Optional
 import os
 from AIClient import AIClient
 from dotenv import load_dotenv
-import time
-import sys
 
 load_dotenv()
 
-def print_animated(text):
-    for t in text:
-        sys.stdout.write(t)
-        sys.stdout.flush()
-        time.sleep(0.05)
-    print()
+app = FastAPI(title="AI Chat Server")
 
-def main():
-    # Load API key from environment variable
-    api_key = os.getenv("XAI_API_KEY")
-    
-    if not api_key:
-        print("Error: XAI_API_KEY environment variable not set")
-        print("Please set by creating a file in your project called .env and putting XAI_API_KEY='your-api-key' in it.")
-        print("Get your API key from https://x.ai/api")
-        return
+# CORS to allow Reflex front-end
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "https://your-reflex-app.vercel.app"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    # Initialize client
-    client = AIClient(api_key)
+# Pydantic models for request/response
+class ChatRequest(BaseModel):
+    prompt: str
 
+class ChatResponse(BaseModel):
+    response: Optional[str]
+    citations: Optional[List[str]]
+
+# Initialize AIClient
+api_key = os.getenv("XAI_API_KEY")
+if not api_key:
+    raise RuntimeError("XAI_API_KEY environment variable not set. Set it in .env with your key from https://x.ai/api")
+
+client = AIClient(api_key)
+
+@app.get("/api/greeting", response_model=ChatResponse)
+async def get_greeting():
     response, citations = client.generate_text("Give me a greeting")
+    if response:
+        return {"response": response, "citations": citations}
+    raise HTTPException(status_code=500, detail="Failed to generate greeting")
 
-    if response: 
-        print_animated(response)
-        print()
-        chatting = True
+@app.post("/api/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest):
+    prompt = request.prompt
+    if "bye" in prompt.lower():
+        response, citations = client.generate_text("Give me a farewell sign off")
     else:
-        print_animated("Something went wrong.")
-        print()
-        chatting = False
-
-    while chatting:
-        # Get the prompt
-        prompt = input("Speak to me: ")
-
-        if "bye" in prompt.lower():
-            chatting = False
-            response, citations = client.generate_text("Give me a farewell sign off")
-        else:
-            # Make API call
-            response, citations = client.generate_text(prompt)
+        response, citations = client.generate_text(prompt)
     
-        if response:
-            print()
-            sys.stdout.write("\rNugget: ")
-            sys.stdout.flush()
+    if response:
+        return {"response": response, "citations": citations}
+    raise HTTPException(status_code=500, detail="Failed to generate response")
 
-            print_animated(response)
+@app.get("/api/farewell", response_model=ChatResponse)
+async def get_farewell():
+    response, citations = client.generate_text("Give me a farewell sign off")
+    if response:
+        return {"response": response, "citations": citations}
+    raise HTTPException(status_code=500, detail="Failed to generate farewell")
 
-            print()
-            print()
-            if citations:
-                for c in citations:
-                    print(c)
-                print()
-        else:
-            print("Failed to get response")
-
-if __name__ == "__main__":
-    main()
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}

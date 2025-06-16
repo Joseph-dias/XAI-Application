@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "XAI Application\\XAI Application.pyproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "XAI UI\\XAI UI.pyproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
