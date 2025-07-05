@@ -5,8 +5,6 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "XAI Application", "XAI Application\XAI Application.pyproj", "{7D03AE57-0862-4CFA-9168-BC1F0F7B03A9}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "XAI UI", "XAI UI\XAI UI.pyproj", "{CFAA5B20-F826-4C4F-9BE5-883CCEF369EC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,9 +15,6 @@ Global
 		{7D03AE57-0862-4CFA-9168-BC1F0F7B03A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7D03AE57-0862-4CFA-9168-BC1F0F7B03A9}.reflex|Any CPU.ActiveCfg = Debug|Any CPU
 		{7D03AE57-0862-4CFA-9168-BC1F0F7B03A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CFAA5B20-F826-4C4F-9BE5-883CCEF369EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFAA5B20-F826-4C4F-9BE5-883CCEF369EC}.reflex|Any CPU.ActiveCfg = Release|Any CPU
-		{CFAA5B20-F826-4C4F-9BE5-883CCEF369EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
