@@ -43,7 +43,7 @@ def main():
 
         if "bye" in prompt.lower():
             chatting = False
-            response, citations = client.generate_text("Give me a farewell sign off")
+            response, citations = client.generate_text("Give me a farewell sign off, including a finishing note about the last topic discussed.")
         else:
             # Make API call
             response, citations = client.generate_text(prompt)
