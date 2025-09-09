@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AIClient.py" />
+    <Compile Include="AIInterface.py" />
     <Compile Include="XAI_Application.py" />
   </ItemGroup>
   <ItemGroup>
