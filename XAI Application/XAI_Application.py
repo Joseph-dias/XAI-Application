@@ -1,4 +1,3 @@
-import gradio
 from AIInterface import AIInterface
 from dotenv import load_dotenv
 
