@@ -84,3 +84,8 @@ class AIClient:
         except requests.RequestException as e:
             print(f"Error making API request: {e}")
             return None
+
+    def get_greeting(self):
+        greeting = self.generate_text("Give me a really friendly greeting.  Include your name and introduce yourself.")
+        message, citation = greeting if greeting is not None else (None, None)
+        return str(message) if message is not None else None

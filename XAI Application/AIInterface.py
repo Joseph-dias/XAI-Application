@@ -28,6 +28,8 @@ class AIInterface:
 
     def getInterface(self):
         return gr.ChatInterface(
+            chatbot=gr.Chatbot(type="messages", value=[{"role": "assistant", "content": self.client.get_greeting()}]),
+            type="messages",
             fn=self.chat_with_ai,
             title="Chat with Nugget",
             description="Get on board for a wild ride!"
