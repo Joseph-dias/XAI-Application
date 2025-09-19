@@ -1,5 +1,6 @@
 import os
 from AIClient import AIClient
+from WebScraping import WebsiteScraping
 from dotenv import load_dotenv
 import time
 import sys
@@ -10,7 +11,7 @@ def print_animated(text):
     for t in text:
         sys.stdout.write(t)
         sys.stdout.flush()
-        time.sleep(0.05)
+        time.sleep(0.02)
     print()
 
 def main():
@@ -24,14 +25,17 @@ def main():
         return
 
     # Initialize client
-    client = AIClient(api_key)
+    client = AIClient(api_key, 1000)
 
-    response, citations = client.generate_text("Give me a greeting")
+    webscraper = WebsiteScraping("https://babylonbee.com/news/jimmy-kimmel-i-am-the-first-victim-of-the-murder-of-charle-kirk")
+    title, body = webscraper.getText()
+
+    response = client.summarizeWebPage(title, body)
 
     if response: 
         print_animated(response)
         print()
-        chatting = True
+        chatting = False
     else:
         print_animated("Something went wrong.")
         print()

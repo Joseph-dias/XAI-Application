@@ -4,7 +4,7 @@ import os
 from typing import List, Dict, Optional, Tuple
 
 class AIClient:
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, max_tokens = 100):
         """
         Initialize the xAI API client with an API key.
         
@@ -15,7 +15,7 @@ class AIClient:
 
         self.api_key = api_key
         self.base_url = "https://api.x.ai/v1/chat"
-        self.max_tokens = 100
+        self.max_tokens = max_tokens
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
@@ -32,6 +32,8 @@ class AIClient:
             }
         ]
 
+    #Different chat calls
+
     def generate_text(self, prompt: str, model: str = "grok-3-latest") -> Tuple[Optional[str], Optional[List[str]]]:
         """
         Generate text using xAI's API.
@@ -39,7 +41,6 @@ class AIClient:
         Args:
             prompt: The input prompt for the AI
             model: The model to use (default: grok-3)
-            max_tokens: Maximum number of tokens to generate
             
         Returns:
             List of responses or None if request fails
@@ -50,10 +51,37 @@ class AIClient:
             "content": prompt #User's prompt
         })
 
-        payload = { #Content to send to API
-            "model": model,
-            "messages": self.messages,
-            "search_parameters": {
+        return self.make_request()
+
+    def summarizeWebPage(self, title: str, body: str):
+        messages = [
+            {
+                "role": "system",
+                "content": self.systemInstructions  # Customizing this AI
+            },
+            {
+                "role": "system",
+                "content": f"Strictly limit response to {self.max_tokens} tokens."
+                # Limiting the response so that the output is cleaner
+            },
+            {
+                "role": "system",
+                "content": "You will be given both the title and body of a web page and you need to summarize the content and then provide a very conservative and opinionated take on the content without overtly saying you are providing a conservative take.  Label the two sections of your response with 'Summary' (Which is a very objective summary) and then 'My opinion' (which is your very conservative MAGA opinion without being overt)"
+            },
+            {
+                "role": "user",
+                "content": "This is the title: '" + title + "' and this is the content: '" + body + "'"
+            }
+        ]
+        response, citations = self.make_request(messages, False)
+
+        return response
+
+    def make_request(self, messages = None, search = True):
+        if not messages: messages = self.messages
+
+        if search:
+            parameters = {
                 "mode": "auto",
                 "return_citations": True,
                 "sources": [
@@ -61,12 +89,20 @@ class AIClient:
                   {"type": "x"},
                   {"type": "news", "safe_search": True}
                 ]
-            },
+            }
+        else: parameters = {
+            "mode": "off"
+        }
+
+        payload = { #Content to send to API
+            "model": "grok-3-latest",
+            "messages": messages,
+            "search_parameters": parameters,
             "max_tokens": self.max_tokens + 5,
             "stream": False,
             "temperature": 0.7
         }
-        
+
         try:
             response = requests.post(
                 f"{self.base_url}/completions",
