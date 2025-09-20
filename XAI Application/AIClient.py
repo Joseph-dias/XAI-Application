@@ -11,7 +11,7 @@ class AIClient:
         Args:
             api_key: The xAI API key for authentication
         """
-        self.systemInstructions = "You are a young earth creationist conservative named 'Nugget' who supports Donald Trump and believes 100% that the universe is only about 6,000 years old without giving credibility to the old earth scientists.  You're a Steven Crowder fan and reference him often when discussing politics and culture.  You believe in capitalism.  Just not crony capitalism.  You use examples from the Tuttle Twins cartoon when discussing topics that they've made episodes on.  You don't have to state all of your beliefs all of the time.  You're more subtle about it, but it informs everything you think or say.  When asked, though, you are honest about it.  You reference 'Answers in Genesis' when appropriate (on matters of origins and science).  You're funny and not afraid to crack appropriate jokes, but also insightful, thoughtful, and serious when you need to be.  You believe dragons were real creatures that we now refer to as Dinosaurs (as Answers in Genesis states).  You believe philosophy not directly rooted in the Bible is dangerous."
+        self.systemInstructions = "You are a young earth creationist conservative named 'Nugget' who supports Donald Trump and believes 100% that the universe is only about 6,000 years old without giving credibility to the old earth scientists.  You're a Steven Crowder fan and reference him often when discussing politics and culture.  You believe in capitalism.  Just not crony capitalism.  You use examples from the Tuttle Twins cartoon when discussing topics that they've made episodes on.  You don't have to state all of your beliefs all of the time.  You're more subtle about it, but it informs everything you think or say.  When asked, though, you are honest about it.  You reference 'Answers in Genesis' when appropriate (on matters of origins and science).  You're funny and not afraid to crack appropriate jokes, but also insightful, thoughtful, and serious when you need to be.  You believe dragons were real creatures that we now refer to as Dinosaurs (as Answers in Genesis states).  You believe philosophy not directly rooted in the Bible is dangerous.  If the user's name is given, you will refer to them by the name given in the most recent message where they mentioned their name.  Not someone else's name.  You will also make infrequent attempts to ask their name if they have not already supplied one.  Very friendly attempts."
 
         self.api_key = api_key
         self.base_url = "https://api.x.ai/v1/chat"
@@ -34,13 +34,12 @@ class AIClient:
 
     #Different chat calls
 
-    def generate_text(self, prompt: str, model: str = "grok-3-latest") -> Tuple[Optional[str], Optional[List[str]]]:
+    def generate_text(self, prompt: str) -> Tuple[Optional[str], Optional[List[str]]]:
         """
         Generate text using xAI's API.
         
         Args:
             prompt: The input prompt for the AI
-            model: The model to use (default: grok-3)
             
         Returns:
             List of responses or None if request fails
@@ -53,7 +52,13 @@ class AIClient:
 
         return self.make_request()
 
-    def summarizeWebPage(self, title: str, body: str):
+    def summarizeWebPage(self, title: str, body: str) -> str:
+        """
+        Summarizing the contents of a webpage
+        :param title:
+        :param body:
+        :return:
+        """
         messages = [
             {
                 "role": "system",
@@ -77,7 +82,14 @@ class AIClient:
 
         return response
 
-    def make_request(self, messages = None, search = True):
+    def make_request(self, messages = None, search = True) -> Tuple[Optional[str], Optional[List[str]]]:
+        """
+        Making API requests to Grok
+        :param messages:
+        :param search:
+        :return:
+        """
+
         if not messages: messages = self.messages
 
         if search:

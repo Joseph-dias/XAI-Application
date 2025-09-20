@@ -4,6 +4,7 @@ from WebScraping import WebsiteScraping
 from dotenv import load_dotenv
 import time
 import sys
+from urllib.parse import urlparse
 
 load_dotenv()
 
@@ -13,6 +14,13 @@ def print_animated(text):
         sys.stdout.flush()
         time.sleep(0.02)
     print()
+
+def is_url(string):
+    try:
+        result = urlparse(string)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
 
 def main():
     # Load API key from environment variable
@@ -27,15 +35,12 @@ def main():
     # Initialize client
     client = AIClient(api_key, 1000)
 
-    webscraper = WebsiteScraping("https://babylonbee.com/news/jimmy-kimmel-i-am-the-first-victim-of-the-murder-of-charle-kirk")
-    title, body = webscraper.getText()
-
-    response = client.summarizeWebPage(title, body)
+    response, citations = client.generate_text("Give me a really friendly greeting")
 
     if response: 
         print_animated(response)
         print()
-        chatting = False
+        chatting = True
     else:
         print_animated("Something went wrong.")
         print()
@@ -48,6 +53,14 @@ def main():
         if "bye" in prompt.lower():
             chatting = False
             response, citations = client.generate_text("Give me a farewell sign off, including a finishing note about the last topic discussed.")
+        elif is_url(prompt):
+            webscraper = WebsiteScraping(prompt)
+            title, body = webscraper.getText()
+
+            response = client.summarizeWebPage(title, body)
+            citations = None
+
+            response = '\n\n' + response #Add newlines before this response
         else:
             # Make API call
             response, citations = client.generate_text(prompt)
